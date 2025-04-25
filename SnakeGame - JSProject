@@ -1,0 +1,71 @@
+<html><head>
+        <title>Ponk - The Game</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <style>
+            canvas {
+                padding-left: 0;
+                padding-right: 0;
+                margin-left: auto;
+                margin-right: auto;
+                display: block;
+                width: 800px;
+            }            
+            
+            p {
+                text-align:center;
+                font-family:'Arial';
+                font-size: larger;
+                font-style: oblique;
+                font-weight: bold;
+            }
+        </style>
+    </head>
+    <body>
+        <div>
+            
+            
+        </div>
+
+        <canvas id="canvas" width="800" height="600" style="border:1px white" tabindex="1"></canvas>
+
+
+        <script>
+            //var ctx = document.getElementById('canvas').getContext('2d');
+            var ctx;
+            var WIDTH;
+            var HEIGHT;
+
+						//Key press variables 
+						var snakeX = 200;
+						var snakeY = 200;
+						var snakeMain = rect(snakeX, snakeY, 10, 10);
+            var up = false;
+            var down = false;
+            var left = false;
+            var right = false;
+            var resetPressed = false;
+            var gamePaused = true;
+
+            function init() {
+                ctx = document.getElementById('canvas').getContext('2d');
+                //attempt full screen
+                //ctx.canvas.width  = window.innerWidth;
+                //ctx.canvas.height = window.innerHeight;
+                WIDTH = ctx.canvas.width;
+                HEIGHT = ctx.canvas.height;
+                requestAnimationFrame(draw);
+                //return setInterval(draw, 10);
+            }
+
+            //force the title
+            document.title = "Ponk - The Game"; 
+            //give the canvas focus
+            document.getElementById('canvas').focus();
+            //call the init function when the page loads
+        </script>
+
+    
+
+
+</body></html>
