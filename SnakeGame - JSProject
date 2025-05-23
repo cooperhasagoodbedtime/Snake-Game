@@ -9,7 +9,7 @@
         <canvas id="canvas" width="800" height="600" style="border:1px white" tabindex="1"></canvas>
         <script>
 
-            // Colors 
+             // Colors 
             var green = "#39ff14";
             var black = "#000000";
             var white = "#FFFFFF";
@@ -19,9 +19,16 @@
             var WIDTH;
             var HEIGHT;
 
-            // Snake position
+            // Snake details
             var snakeX;
             var snakeY;
+            var snakeSize;
+            
+            //Key Presses
+            var wPressed;
+            var aPressed;
+            var sPressed;
+            var dPressed;
 
             // Sets up page
             function init() {
@@ -33,6 +40,12 @@
                 // Now that WIDTH and HEIGHT are defined, initialize the snake
                 snakeX = WIDTH / 2;
                 snakeY = HEIGHT / 2;
+                snakeSize = 15;
+                
+                wPressed = true;
+                aPressed = false;
+                sPressed = false;
+                dPressed = false;
 
                 requestAnimationFrame(draw);
             }
@@ -43,27 +56,69 @@
                 ctx.closePath();
                 ctx.fill();
             }
-
+            
+            
             function clear() {
                 ctx.fillStyle = black;
                 rect(0, 0, WIDTH, HEIGHT);
             }
 
-            function background() {
-                ctx.fillStyle = black;
-                rect(0, 0, WIDTH, HEIGHT);
+            function drawSnake() {
+                ctx.fillStyle = green;
+                rect(snakeX, snakeY, snakeSize, snakeSize);
+            }
+            
+            function onKeyDown(evt) {
+                if (evt.keyCode === 87) { //W key
+                    wPressed = true;
+                    aPressed = false;
+                    sPressed = false;
+                    dPressed = false;
+                } else if (evt.keyCode === 65){ //A key
+                    aPressed = true;
+                    wPressed = false;
+                    sPressed = false;
+                    dPressed = false;
+                } else if (evt.keyCode === 83) { //S key
+                    sPressed = true;
+                    wPressed = false;
+                    dPressed = false;
+                    aPressed = false;
+                } else if (evt.keyCode === 68) { //D key
+                    dPressed = true;
+                    wPressed = false;
+                    sPressed = false;
+                    aPressed = false;
+                }
+            }
+            
+            function moveSnake() {
+                
+                onKeyDown(evt);
+        
+                if (wPressed === true && snakeY > 0) {
+                    snakeY -= 3;
+                } else if (aPressed === true && snakeX > 0) {
+                    snakeX -= 3;
+                } else if (sPressed === true && snakeY < HEIGHT) {
+                    snakeY += 3;
+                } else if (dPressed === true && snakeX < WIDTH) {
+                    snakeX += 3;
+                }
             }
 
             function draw() {
-                background();
-
-                // Example draw: draw the snake as a green square
-                ctx.fillStyle = green;
-                rect(snakeX, snakeY, 10, 10);
+                clear();
+                
+                moveSnake();
+                drawSnake();
 
                 requestAnimationFrame(draw);
             }
 
+            document.title = "Snake-Game";
+            document.getElementById('canvas').focus();
+            window.addEventListener("load", init, false);
 
 
         </script>
