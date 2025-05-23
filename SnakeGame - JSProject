@@ -9,7 +9,7 @@
         <canvas id="canvas" width="800" height="600" style="border:1px white" tabindex="1"></canvas>
         <script>
 
-             // Colors 
+            // Colors 
             var green = "#39ff14";
             var black = "#000000";
             var white = "#FFFFFF";
@@ -93,16 +93,13 @@
             }
             
             function moveSnake() {
-                
-                onKeyDown(evt);
-        
-                if (wPressed === true && snakeY > 0) {
+                if (wPressed === true && snakeY > 3) {
                     snakeY -= 3;
-                } else if (aPressed === true && snakeX > 0) {
+                } else if (aPressed === true && snakeX > 3) {
                     snakeX -= 3;
-                } else if (sPressed === true && snakeY < HEIGHT) {
+                } else if (sPressed === true && snakeY < (HEIGHT - snakeSize)) {
                     snakeY += 3;
-                } else if (dPressed === true && snakeX < WIDTH) {
+                } else if (dPressed === true && snakeX < (WIDTH - snakeSize)) {
                     snakeX += 3;
                 }
             }
@@ -119,6 +116,7 @@
             document.title = "Snake-Game";
             document.getElementById('canvas').focus();
             window.addEventListener("load", init, false);
+            window.addEventListener("keydown", onKeyDown, false);
 
 
         </script>
