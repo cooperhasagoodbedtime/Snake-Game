@@ -1,12 +1,12 @@
 <html><head>
-        <title>Snake_Game</title>
+        <title>Funkey-Snake</title>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
     </head>
     <body>
         <div></div>
 
-        <canvas id="canvas" width="800" height="600" style="border:1px white" tabindex="1"></canvas>
+        <canvas id="canvas" width="800" height="800" style="border:1px white" tabindex="1"></canvas>
         <script>
 
             // Colors 
@@ -23,102 +23,192 @@
             var snakeX;
             var snakeY;
             var snakeSize;
-            
+            var snakeSpeed;
+            var snakeLength;
+
             //Key Presses
             var wPressed;
             var aPressed;
             var sPressed;
             var dPressed;
 
+            //Header
+            var points;
+            var speed;
+
+            //Dot
+            var dotXFactor;
+            var dotYFactor;
+            var dotX;
+            var dotY;
+
             // Sets up page
             function init() {
                 ctx = document.getElementById('canvas').getContext('2d');
-
+                
                 WIDTH = ctx.canvas.width;
                 HEIGHT = ctx.canvas.height;
-
-                // Now that WIDTH and HEIGHT are defined, initialize the snake
+                //starting parameters for the snake
                 snakeX = WIDTH / 2;
                 snakeY = HEIGHT / 2;
-                snakeSize = 15;
+                snakeSize = WIDTH / 50;
+                snakeSpeed = 100;
+                snakeLength = [1];
                 
+                //Sets starting direction to up
                 wPressed = true;
                 aPressed = false;
                 sPressed = false;
                 dPressed = false;
+                //Sets the score and speed 
+                points = 0;
+                speed = 1;
+                //Math for snake array
+                dotXFactor = Math.floor(Math.random() * 49) + 1;
+                dotX = dotXFactor * snakeSize;
+                dotYFactor = Math.floor(Math.random() * 49) + 1;
+                dotY = dotYFactor * snakeSize;
 
                 requestAnimationFrame(draw);
             }
-
+            //Sets up a drawable rectangle 
             function rect(x, y, w, h) {
                 ctx.beginPath();
                 ctx.rect(x, y, w, h);
                 ctx.closePath();
                 ctx.fill();
             }
-            
-            
+            //Function that draws the dot
+            function createDot() {
+                ctx.fillStyle = white;
+                rect(dotX, dotY, snakeSize, snakeSize);
+            }
+            //Clears the screen on startup
             function clear() {
                 ctx.fillStyle = black;
                 rect(0, 0, WIDTH, HEIGHT);
             }
-
-            function drawSnake() {
-                ctx.fillStyle = green;
-                rect(snakeX, snakeY, snakeSize, snakeSize);
-            }
-            
+            //Detects if key is pressed 
             function onKeyDown(evt) {
                 if (evt.keyCode === 87) { //W key
+                    //If w pressed, Move up
                     wPressed = true;
                     aPressed = false;
                     sPressed = false;
                     dPressed = false;
-                } else if (evt.keyCode === 65){ //A key
+                } else if (evt.keyCode === 65) { //A key
+                    //If a pressed, Move left
                     aPressed = true;
                     wPressed = false;
                     sPressed = false;
                     dPressed = false;
                 } else if (evt.keyCode === 83) { //S key
+                    //If s pressed, Move down
                     sPressed = true;
                     wPressed = false;
                     dPressed = false;
                     aPressed = false;
                 } else if (evt.keyCode === 68) { //D key
+                    //If d pressed, Move right
                     dPressed = true;
                     wPressed = false;
                     sPressed = false;
                     aPressed = false;
                 }
             }
-            
+            //Invokes move snake once every 250ms
+            setInterval(moveSnake, 250);
+            //Moves snake body
             function moveSnake() {
+                //If in bounds and w is pressed
                 if (wPressed === true && snakeY > 3) {
-                    snakeY -= 3;
+                    //Move snake y by length
+                    snakeY -= snakeSize;
+                //If in bounds and a is pressed
                 } else if (aPressed === true && snakeX > 3) {
-                    snakeX -= 3;
+                    //Move snake x by length
+                    snakeX -= snakeSize;
+                //If in bounds and s is pressed
                 } else if (sPressed === true && snakeY < (HEIGHT - snakeSize)) {
-                    snakeY += 3;
+                    //Move snake yyby length
+                    snakeY += snakeSize;
+                //If in bounds and d is pressed
                 } else if (dPressed === true && snakeX < (WIDTH - snakeSize)) {
-                    snakeX += 3;
+                    //Move snake x by length
+                    snakeX += snakeSize;
+                }
+            }
+
+            function drawSnake() {
+                ctx.fillStyle = green;
+                //For every length point loop
+                for (let i = snakeLength.length - 1; i >= 0; i--) { 
+                    //Creates displacement
+                    var displaceFactor = snakeSize * i; 
+                    //if w is pressed
+                    if (wPressed === true) {
+                        //make next piece
+                        rect(snakeX, snakeY + displaceFactor, snakeSize, snakeSize); 
+                    //if a is pressed
+                    } else if (aPressed === true) { 
+                        //make next piece
+                        rect(snakeX + displaceFactor, snakeY , snakeSize, snakeSize); 
+                    //if s is pressed
+                    } else if (sPressed === true) { 
+                        //make next piece
+                        rect(snakeX, snakeY - displaceFactor, snakeSize, snakeSize); 
+                    //if d is pressed
+                    } else if (dPressed === true) { 
+                        //make next piece
+                        rect(snakeX - displaceFactor, snakeY , snakeSize, snakeSize); 
+                    } 
+                }
+            }
+
+            //Creates the score header
+            function drawScore() {
+                ctx.fillStyle = "#FFFFFF"; //white
+                ctx.font = "30px Courier";
+                ctx.fillText("Points: " + points + " Speed: " + speed, WIDTH / 2 - 180, 30);
+            }
+            //Checks if the snake is touching the dot 
+            function ifTouchDot() {
+                //Snake is touching dot
+                if (snakeX === dotX && snakeY === dotY) {
+                    //Add a point
+                    points++;
+                    //Set random dot x seed
+                    dotXFactor = Math.floor(Math.random() * 50) + 1;
+                    //Puts it somewhere on the grid
+                    dotX = dotXFactor * snakeSize;
+                    //Sets random dot y seed
+                    dotYFactor = Math.floor(Math.random() * 50) + 1;
+                    //Puts it somewhere on the grid
+                    dotY = dotYFactor * snakeSize;
+                    //Adds to the snakes length
+                    snakeLength.length += 1;
                 }
             }
 
             function draw() {
+                //Clears screen
                 clear();
-                
-                moveSnake();
+                //Draws all, runs movement, and runs dot code
                 drawSnake();
-
+                drawScore();
+                createDot();
+                ifTouchDot();
+                //Request another frame
                 requestAnimationFrame(draw);
             }
-
-            document.title = "Snake-Game";
+            //Creates title
+            document.title = "Funky-Snake";
+            //Gives the canvas focus
             document.getElementById('canvas').focus();
+            //Call init function 
             window.addEventListener("load", init, false);
+            //Adds keydown event listener 
             window.addEventListener("keydown", onKeyDown, false);
-
-
         </script>
     </body>
 </html>
